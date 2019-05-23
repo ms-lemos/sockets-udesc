@@ -12,23 +12,34 @@ namespace SocketsRede.Servidor.Acoes
 
 		public Servidor()
 		{
-			_server = new TcpListener(IPAddress.Parse(Configuracoes.Instance.Endereco),
-					Configuracoes.Instance.Porta);
+			_server = new TcpListener(IPAddress.Any, Configuracoes.Instance.Porta);
 		}
-		/// <inheritdoc />
+		
 		public void Execute()
 		{
 			ConsoleKey comando;
+
+			Console.Clear();
+			Console.WriteLine("********************************************");
+			Console.WriteLine("*                                          *");
+			Console.WriteLine("*  Servidor em execução                    *");
+			Console.WriteLine("*                                          *");
+			Console.WriteLine("*  Escutando conexão, tecle Q para sair    *");
+			Console.WriteLine("*                                          *");
+
+			_server.Start();
+			AceitaConexao();
+
 			do
 			{
-				Console.WriteLine(" Escutando conexão, tecle Q para sair. ");
-
-				_server.Start();
-				AceitaConexao();
-
 				comando = Console.ReadKey().Key;
-
 			} while (comando != ConsoleKey.Q);
+
+			Console.WriteLine("                                          *");
+			Console.WriteLine("*  Pressione qualquer tecla para continuar *");
+			Console.WriteLine("*                                          *");
+			Console.WriteLine("********************************************");
+			Console.ReadKey();
 		}
 
 		private void AceitaConexao()
@@ -51,20 +62,25 @@ namespace SocketsRede.Servidor.Acoes
 			{
 				var data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
 
-				Console.WriteLine("Received: {0}", data);
+				Console.WriteLine("********************************************");
+				Console.WriteLine("*                                          *");
+				Console.WriteLine("*  Informação recebida                     *");
+				Console.WriteLine($"*  {data.PadRight(38)}  *");
 
-				// Process the data sent by the client. TODO AQUI
+				// TODO Aqui é realizado o processamento
 				data = data.ToUpper();
 
 				var msg = System.Text.Encoding.ASCII.GetBytes(data);
-
-				// Send back a response.
+				
 				stream.Write(msg, 0, msg.Length);
 
-				Console.WriteLine("Sent: {0}", data);
+				Console.WriteLine("*                                          *");
+				Console.WriteLine("*  Informação enviada                      *");
+				Console.WriteLine($"*  {data.PadRight(38)}  *");
+				Console.WriteLine("*                                          *");
+				Console.WriteLine("********************************************");
 			}
-
-			// Shutdown and end connection
+			
 			client.Close();
 		}
 	}

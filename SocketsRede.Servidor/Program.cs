@@ -2,7 +2,7 @@
 {
 	internal static class Program
 	{
-		private static void Main()
+		public static void Main()
 		{
 			var menu = new MainMenu();
 			menu.Start();
